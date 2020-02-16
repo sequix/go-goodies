@@ -1,7 +1,14 @@
 # goodies-go
 Reuseable code pieces for golang.
 
-## Good Advises
+## Good Stuff & Advises
+
+### Code generators
+
+1. Regexp debugger & generator: [regex101.com](regex101.com)
+2. JSON to go struct: [mholt.github.io/json-to-go](mholt.github.io/json-to-go)
+3. YAML to go struct: [yaml2go.prasadg.dev](yaml2go.prasadg.dev)
+4. cURL to go code: [curl.trillworks.com/#go](curl.trillworks.com/#go)
 
 ### Errors
 
