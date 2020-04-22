@@ -1,11 +1,9 @@
-package muxer_test
+package muxer
 
 import (
 	"math/rand"
 	"testing"
 	"time"
-
-	"github.com/sequix/test-go/muxer"
 )
 
 func BenchmarkMux10(b *testing.B) {
@@ -56,7 +54,7 @@ func muxJobs(b *testing.B, jobscount int) {
 	sources = append(sources, newWorstCaseWorker())
 
 	sink := make(chan time.Duration)
-	if err := muxer.Do(sink, sources...); err != nil {
+	if err := Do(sink, sources...); err != nil {
 		panic(err)
 	}
 

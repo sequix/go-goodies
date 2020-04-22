@@ -1,10 +1,9 @@
-package muxer_test
+package muxer
 
 import (
 	"testing"
 
-	"github.com/madlambda/spells/assert"
-	"github.com/madlambda/spells/muxer"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMux(t *testing.T) {
@@ -57,7 +56,7 @@ func TestMuxClosedChannels(t *testing.T) {
 	close(source1)
 	close(source2)
 
-	assert.NoError(t, muxer.Do(sink, source1, source2))
+	assert.NoError(t, Do(sink, source1, source2))
 
 	v, ok := <-sink
 	if ok {
@@ -71,7 +70,7 @@ func TestMuxCloseFirstSource(t *testing.T) {
 	source2 := make(chan int)
 	source3 := make(chan int)
 
-	assert.NoError(t, muxer.Do(sink, source1, source2, source3))
+	assert.NoError(t, Do(sink, source1, source2, source3))
 
 	close(source1)
 
@@ -82,8 +81,8 @@ func TestMuxCloseFirstSource(t *testing.T) {
 		source2 <- want2
 	}()
 
-	assert.EqualInts(t, want1, <-sink)
-	assert.EqualInts(t, want2, <-sink)
+	assert.Equal(t, want1, <-sink)
+	assert.Equal(t, want2, <-sink)
 }
 
 func TestMuxCloseMiddleSource(t *testing.T) {
@@ -92,7 +91,7 @@ func TestMuxCloseMiddleSource(t *testing.T) {
 	source2 := make(chan int)
 	source3 := make(chan int)
 
-	assert.NoError(t, muxer.Do(sink, source1, source2, source3))
+	assert.NoError(t, Do(sink, source1, source2, source3))
 
 	close(source2)
 
@@ -103,8 +102,8 @@ func TestMuxCloseMiddleSource(t *testing.T) {
 		source1 <- want2
 	}()
 
-	assert.EqualInts(t, want1, <-sink)
-	assert.EqualInts(t, want2, <-sink)
+	assert.Equal(t, want1, <-sink)
+	assert.Equal(t, want2, <-sink)
 }
 
 func TestMuxCloseLastSource(t *testing.T) {
@@ -113,7 +112,7 @@ func TestMuxCloseLastSource(t *testing.T) {
 	source2 := make(chan int)
 	source3 := make(chan int)
 
-	assert.NoError(t, muxer.Do(sink, source1, source2, source3))
+	assert.NoError(t, Do(sink, source1, source2, source3))
 
 	close(source3)
 
@@ -124,8 +123,8 @@ func TestMuxCloseLastSource(t *testing.T) {
 		source1 <- want2
 	}()
 
-	assert.EqualInts(t, want1, <-sink)
-	assert.EqualInts(t, want2, <-sink)
+	assert.Equal(t, want1, <-sink)
+	assert.Equal(t, want2, <-sink)
 }
 
 func TestMuxDirectionedChannels(t *testing.T) {
@@ -142,10 +141,8 @@ func TestMuxDirectionedChannels(t *testing.T) {
 		close(source)
 	}()
 
-	assert.NoError(t, muxer.Do(sinkSendOnly, sourceReadOnly))
-
-	v := <-sink
-	assert.EqualStrings(t, expectedVal, v)
+	assert.NoError(t, Do(sinkSendOnly, sourceReadOnly))
+	assert.Equal(t, expectedVal, <-sink)
 }
 
 func TestFailsOnWrongSourceDirection(t *testing.T) {
@@ -153,7 +150,7 @@ func TestFailsOnWrongSourceDirection(t *testing.T) {
 	source := make(chan string)
 	var sourceSendOnly chan<- string = source
 
-	assert.Error(t, muxer.Do(sink, sourceSendOnly))
+	assert.Error(t, Do(sink, sourceSendOnly))
 }
 
 func TestFailsOnWrongSinkDirection(t *testing.T) {
@@ -161,14 +158,14 @@ func TestFailsOnWrongSinkDirection(t *testing.T) {
 	source := make(chan string)
 
 	var sinkReadOnly <-chan string = sink
-	assert.Error(t, muxer.Do(sinkReadOnly, source))
+	assert.Error(t, Do(sinkReadOnly, source))
 }
 
 func TestErrorOnInvalidSink(t *testing.T) {
 	for name, invalidSink := range invalidCases() {
 		t.Run(name, func(t *testing.T) {
 			source := make(chan int)
-			assert.Error(t, muxer.Do(invalidSink, source))
+			assert.Error(t, Do(invalidSink, source))
 		})
 	}
 }
@@ -178,8 +175,8 @@ func TestErrorOnInvalidSource(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			sink := make(chan int)
 			validSource := make(chan int)
-			assert.Error(t, muxer.Do(sink, validSource, invalidSource))
-			assert.Error(t, muxer.Do(sink, invalidSource, validSource))
+			assert.Error(t, Do(sink, validSource, invalidSource))
+			assert.Error(t, Do(sink, invalidSource, validSource))
 		})
 	}
 }
@@ -213,7 +210,7 @@ func testMux(t *testing.T, tcase TestCase) {
 			sourcesgen = append(sourcesgen, source)
 		}
 		sink := make(chan int)
-		assert.NoError(t, muxer.Do(sink, sourcesgen...))
+		assert.NoError(t, Do(sink, sourcesgen...))
 
 		go func() {
 			for i, v := range tcase.expectedOutputs {
@@ -236,7 +233,7 @@ func testMux(t *testing.T, tcase TestCase) {
 
 		for i, want := range tcase.expectedOutputs {
 			got := gotOutputs[i]
-			assert.EqualInts(t, want, got)
+			assert.Equal(t, want, got)
 		}
 	})
 }
