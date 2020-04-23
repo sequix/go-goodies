@@ -85,7 +85,7 @@ func (cfg *ServerConfig) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// 返回顺序要遵守：header -> status code -> body
+	// must in this order: header -> status code -> body
 	rspHeaders := w.Header()
 	for k, v := range cfg.ResponseHeaders {
 		rspHeaders.Set(k, v)

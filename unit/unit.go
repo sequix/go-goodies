@@ -30,3 +30,5 @@ const (
 	ZB            = 1000 * EB // overflow uint64
 	YB            = 1000 * ZB // overflow uint64
 )
+
+// todo stringer and parser
