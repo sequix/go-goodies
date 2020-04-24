@@ -16,3 +16,12 @@ Reuseable code pieces for golang.
 2. Do not use word 'failed', 'unsuccessful' and etc, the error itself says it is a error already.
 3. Wrap errors as each layer the error passed on.
 4. Each layer's wrapping states only what it is doing.
+
+### Cache
+
+1. [patrick/go-cache](https://github.com/patrickmn/go-cache): programmer-friendly in-memory cache, see also [this](https://sequix.cn/post/2020-01-25-valyala-fastcache/).
+2. [VictoriaMetrics/fastcache](https://github.com/VictoriaMetrics/fastcache): fixed-size in-memory cache based on ringbuffer
+
+### CLI
+
+Just [cobra](https://github.com/spf13/cobra), and check generator usage [doc](https://github.com/spf13/cobra/blob/master/cobra/README.md).
